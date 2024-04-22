@@ -6,10 +6,17 @@ import com.mongodb.client.*;
 import com.mongodb.client.result.DeleteResult;
 import org.bson.Document;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 public class TelefonoCRUD {
     private static MongoClient mongoClient;
     private static MongoDatabase database;
     private static MongoCollection<Document> collection;
+
+
+
 
     //Conectar con la Base de Datos.
     public static void conexion() {
@@ -22,38 +29,75 @@ public class TelefonoCRUD {
         collection = database.getCollection("mi_coleccion");
     }
 
-    public static void insertarTelefono(Telefono telefono) {
-        Document docTelefono = new Document("marca", telefono.getMarca())
-                .append("modelo", telefono.getModelo())
-                .append("sistemaOperativo", telefono.getSistemaOperativo())
-                .append("tamanoPantalla", telefono.getTamanoPantalla())
-                .append("memoriaRAM", telefono.getMemoriaRAM())
-                .append("almacenamientoInterno", telefono.getAlmacenamientoInterno())
-                .append("tieneCamara", telefono.isTieneCamara())
-                .append("resolucionCamara", telefono.getResolucionCamara())
-                .append("esSmartphone", telefono.isEsSmartphone())
-                .append("imei", telefono.getImei());
-        collection.insertOne(docTelefono);
-        System.out.println("Telefono insertado correctamente.");
+
+    public static void insertarTelefono() {
+      Document Telefono1 = new Document("modelo", "Galaxy S21")
+              .append("marca", "Samsung")
+              .append("sistemaOperativo", "Android")
+              .append("tamanoPantalla", 6.2)
+              .append("memoriaRAM", 8)
+              .append("almacenamientoInterno", 128)
+              .append("tieneCamara", true)
+              .append("resolucionCamara", 64)
+              .append("esSmartphone", true)
+              .append("imei", "123456789012345");
+
+      Document Telefono2 = new Document("modelo", "Iphone 15 Pro Max")
+              .append("marca", "Apple")
+              .append("sistemaOperativo", "iOS")
+              .append("tamanoPantalla", 6.7)
+              .append("memoriaRAM", 6)
+              .append("almacenamientoInterno", 256)
+              .append("tieneCamara", true)
+              .append("resolucionCamara", 24)
+              .append("esSmartphone", true)
+              .append("imei", "987654321098765");
+
+      Document Telefono3 = new Document("modelo", "Nothing Phone 2")
+              .append("marca", "Nothing")
+              .append("sistemaOperativo", "Android")
+              .append("tamanoPantalla", 6.4)
+              .append("memoriaRAM", 12)
+              .append("almacenamientoInterno", 128)
+              .append("tieneCamara", true)
+              .append("resolucionCamara", 108)
+              .append("esSmartphone", true)
+              .append("imei", "543216789012345");
+
+      Document Telefono4 = new Document("modelo", "Nokia 1100")
+              .append("marca", "Nokia")
+              .append("sistemaOperativo", "Symbian")
+              .append("tamanoPantalla", 1.5)
+              .append("memoriaRAM", 0)
+              .append("almacenamientoInterno", 2)
+              .append("tieneCamara", false)
+              .append("resolucionCamara", 0)
+              .append("esSmartphone", false)
+              .append("imei", "123156416516516");
+
+      Document Telefono5 = new Document("modelo", "Nokia 3310 5G")
+                .append("marca", "Nokia")
+                .append("sistemaOperativo", "YunOS")
+                .append("tamanoPantalla", 2.4)
+                .append("memoriaRAM", 2)
+                .append("almacenamientoInterno", 16)
+                .append("tieneCamara", true)
+                .append("resolucionCamara", 2)
+                .append("esSmartphone", false)
+                .append("imei", "1234567890123452");
+
+        //Insertar en la colección.
+        collection.insertOne(Telefono1);
+        collection.insertOne(Telefono2);
+        collection.insertOne(Telefono3);
+        collection.insertOne(Telefono4);
+        collection.insertOne(Telefono5);
+
+        System.out.println("Se ha insertado correctamente.");
+
     }
 
-    public static void mostrarTelefonos() {
-        FindIterable<Document> telefonos = collection.find();
-        for (Document docTelefono : telefonos) {
-            String marca = docTelefono.getString("marca");
-            String modelo = docTelefono.getString("modelo");
-            String sistemaOperativo = docTelefono.getString("sistemaOperativo");
-            double tamanoPantalla = docTelefono.getDouble("tamanoPantalla");
-            int memoriaRAM = docTelefono.getInteger("memoriaRAM");
-            int almacenamientoInterno = docTelefono.getInteger("almacenamientoInterno");
-            boolean tieneCamara = docTelefono.getBoolean("tieneCamara");
-            int resolucionCamara = docTelefono.getInteger("resolucionCamara");
-            boolean esSmartphone = docTelefono.getBoolean("esSmartphone");
-            String imei = docTelefono.getString("imei");
 
-            System.out.println("Marca: " + marca + ", Modelo: " + modelo + ", Sistema Operativo: " + sistemaOperativo + ", Tamaño de Pantalla: " + tamanoPantalla + ", Memoria RAM: " + memoriaRAM + ", Almacenamiento Interno: " + almacenamientoInterno + ", Tiene Cámara: " + tieneCamara + ", Resolución de Cámara: " + resolucionCamara + ", Es Smartphone: " + esSmartphone + ", IMEI: " + imei);
-        }
-    }
 
     public static void actualizarTelefono(String imei, String nuevaMarca) {
         Document filtro = new Document("imei", imei);
@@ -74,6 +118,41 @@ public class TelefonoCRUD {
             }
         } catch (Exception e) {
             System.err.println("Error al eliminar el telefono: " + e.getMessage());
+        }
+    }
+
+    public static void leerTelefono(){
+        List<Telefono> telefono = new ArrayList<>();
+
+        //leer todos los documentos
+        for (Document doc: collection.find()){
+            Telefono TelefonoCRUD = new Telefono();
+            TelefonoCRUD.setMarca(doc.getString("marca"));
+            TelefonoCRUD.setModelo(doc.getString("modelo"));
+            TelefonoCRUD.setSistemaOperativo(doc.getString("sistemaOperativo"));
+            TelefonoCRUD.setTamanoPantalla(doc.getDouble("tamanoPantalla"));
+            TelefonoCRUD.setMemoriaRAM(doc.getInteger("memoriaRAM"));
+            TelefonoCRUD.setAlmacenamientoInterno(doc.getInteger("almacenamientoInterno"));
+            TelefonoCRUD.setTieneCamara(doc.getBoolean("tieneCamara"));
+            TelefonoCRUD.setResolucionCamara(doc.getInteger("resolucionCamara"));
+            TelefonoCRUD.setEsSmartphone(doc.getBoolean("esSmartphone"));
+            TelefonoCRUD.setImei(doc.getString("imei"));
+            telefono.add(TelefonoCRUD);
+
+        }
+        for (Telefono t: telefono){
+            System.out.println("Marca: "+t.getMarca());
+            System.out.println("Modelo: "+t.getModelo());
+            System.out.println("Sistema Operativo: "+t.getSistemaOperativo());
+            System.out.println("Tamaño de Pantalla: "+t.getTamanoPantalla());
+            System.out.println("Memoria RAM: "+t.getMemoriaRAM());
+            System.out.println("Almacenamiento Interno: "+t.getAlmacenamientoInterno());
+            System.out.println("Tiene Camara: "+t.getTieneCamara());
+            System.out.println("Resolucion de Camara: "+t.getResolucionCamara());
+            System.out.println("Es Smartphone: "+t.getEsSmartphone());
+            System.out.println("IMEI: "+t.getImei());
+            System.out.println("_________");
+
         }
     }
 
