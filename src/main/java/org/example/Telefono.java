@@ -97,7 +97,21 @@ public class Telefono {
     }
 
   // l
-
+  @Override
+  public String toString() {
+      return "Telefono{" +
+              "marca='" + marca + '\'' +
+              ", modelo='" + modelo + '\'' +
+              ", sistemaOperativo='" + sistemaOperativo + '\'' +
+              ", tamanoPantalla=" + tamanoPantalla +
+              ", memoriaRAM=" + memoriaRAM +
+              ", almacenamientoInterno=" + almacenamientoInterno +
+              ", tieneCamara=" + tieneCamara +
+              ", resolucionCamara=" + resolucionCamara +
+              ", esSmartphone=" + esSmartphone +
+              ", imei='" + imei + '\'' +
+              '}';
+  }
 
 }
 

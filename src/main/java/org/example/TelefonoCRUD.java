@@ -19,7 +19,7 @@ public class TelefonoCRUD {
 
 
     //Conectar con la Base de Datos.
-    public static void conexion() {
+        public static void conexion() {
         ConnectionString connectionString = new ConnectionString("mongodb://localhost:27017");
         MongoClientSettings settings = MongoClientSettings.builder()
                 .applyConnectionString(connectionString)
@@ -121,40 +121,43 @@ public class TelefonoCRUD {
         }
     }
 
-    public static void leerTelefono(){
-        List<Telefono> telefono = new ArrayList<>();
 
-        //leer todos los documentos
-        for (Document doc: collection.find()){
-            Telefono TelefonoCRUD = new Telefono();
-            TelefonoCRUD.setMarca(doc.getString("marca"));
-            TelefonoCRUD.setModelo(doc.getString("modelo"));
-            TelefonoCRUD.setSistemaOperativo(doc.getString("sistemaOperativo"));
-            TelefonoCRUD.setTamanoPantalla(doc.getDouble("tamanoPantalla"));
-            TelefonoCRUD.setMemoriaRAM(doc.getInteger("memoriaRAM"));
-            TelefonoCRUD.setAlmacenamientoInterno(doc.getInteger("almacenamientoInterno"));
-            TelefonoCRUD.setTieneCamara(doc.getBoolean("tieneCamara"));
-            TelefonoCRUD.setResolucionCamara(doc.getInteger("resolucionCamara"));
-            TelefonoCRUD.setEsSmartphone(doc.getBoolean("esSmartphone"));
-            TelefonoCRUD.setImei(doc.getString("imei"));
-            telefono.add(TelefonoCRUD);
+    public static Nodo obtenerTelefonostoLinkedList() {
+        Nodo cabeza = null;
+        Nodo ultimo = null;
+        try {
+            FindIterable<Document> documents = collection.find();
 
+            for (Document doc : documents) {
+                Telefono telefono = leertelefono(doc);
+                Nodo nodo = new Nodo(telefono);
+                if (cabeza == null) {
+                    cabeza = nodo;
+                } else {
+                    ultimo.setSiguiente(nodo);
+                }
+                ultimo = nodo;
+            }
+        } catch (Exception e) {
+            System.err.println("Error al obtener los teléfonos: " + e.getMessage());
         }
-        for (Telefono t: telefono){
-            System.out.println("Marca: "+t.getMarca());
-            System.out.println("Modelo: "+t.getModelo());
-            System.out.println("Sistema Operativo: "+t.getSistemaOperativo());
-            System.out.println("Tamaño de Pantalla: "+t.getTamanoPantalla());
-            System.out.println("Memoria RAM: "+t.getMemoriaRAM());
-            System.out.println("Almacenamiento Interno: "+t.getAlmacenamientoInterno());
-            System.out.println("Tiene Camara: "+t.getTieneCamara());
-            System.out.println("Resolucion de Camara: "+t.getResolucionCamara());
-            System.out.println("Es Smartphone: "+t.getEsSmartphone());
-            System.out.println("IMEI: "+t.getImei());
-            System.out.println("_________");
-
-        }
+        return cabeza;
     }
+    private static Telefono leertelefono(Document doc) {
+        Telefono telefono = new Telefono();
+        telefono.setMarca(doc.getString("marca"));
+        telefono.setModelo(doc.getString("modelo"));
+        telefono.setSistemaOperativo(doc.getString("sistemaOperativo"));
+        telefono.setTamanoPantalla(doc.getDouble("tamanoPantalla"));
+        telefono.setMemoriaRAM(doc.getInteger("memoriaRAM"));
+        telefono.setAlmacenamientoInterno(doc.getInteger("almacenamientoInterno"));
+        telefono.setTieneCamara(doc.getBoolean("tieneCamara"));
+        telefono.setResolucionCamara(doc.getInteger("resolucionCamara"));
+        telefono.setEsSmartphone(doc.getBoolean("esSmartphone"));
+        telefono.setImei(doc.getString("imei"));
+        return telefono;
+    }
+
 
     public static void cerrarConexion() {
         if (mongoClient != null) {
